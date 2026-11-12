@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Absensi & Kegiatan PKL</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1b1f24;--mu:#667085;--bd:#e2e5ea;--ac:#2563eb;--ok:#16a34a;--no:#dc2626;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161a;--card:#1d2025;--tx:#eceef2;--mu:#98a1b0;--bd:#2d323a;--ac:#6b9bff;--ok:#4ade80;--no:#f87171;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+.w{max-width:900px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 12px}h2{font-size:16px;margin:0 0 10px}
+nav{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+nav button{flex:1;min-width:90px}
+button,.btn{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;font:inherit;cursor:pointer}
+button.p,nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+button.d{color:var(--no)}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+input,select,textarea{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--bd);border-radius:8px;padding:8px;font:inherit;margin-bottom:8px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0 10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:12px}
+.k div{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:12px}
+.k b{display:block;font-size:22px}.k span,.m{color:var(--mu);font-size:13px}
+.ok{color:var(--ok)}.no{color:var(--no)}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
+.ph{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ph figure{margin:0;border:1px solid var(--bd);border-radius:10px;overflow:hidden;background:var(--bg)}
+.ph img{width:100%;height:110px;object-fit:cover;display:block}.ph figcaption{padding:6px;font-size:12px}
+svg text{fill:var(--tx);font-size:12px}.bar{fill:var(--ac)}
+.hid{display:none}
+@media print{nav,.noprint,button{display:none!important}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>📍 Absensi & Kegiatan PKL</h1>
+<nav>
+<button data-t="abs" class="on">Absensi</button><button data-t="keg">Kegiatan</button><button data-t="mgg">Anak Magang</button><button data-t="lap">Laporan</button>
+</nav>
+
+<section id="abs">
+ <div class="c"><h2>Absen Hari Ini</h2>
+  <select id="aInt"></select>
+  <div class="row"><button class="p" id="bIn">Absen Masuk</button><button id="bOut">Absen Pulang</button></div>
+  <p class="m" id="aMsg">Lokasi akan diambil dari GPS perangkat saat absen.</p></div>
+ <div class="c"><h2>Lokasi Tempat PKL</h2>
+  <div class="g"><input id="pN" placeholder="Nama tempat PKL"><input id="pR" type="number" placeholder="Radius (meter)" value="100"></div>
+  <div class="row"><button id="bLoc">Gunakan lokasi saya sekarang sebagai titik tempat PKL</button></div>
+  <p class="m" id="pInfo"></p></div>
+ <div class="c"><h2>Riwayat Absensi</h2><div class="sc" id="aTab"></div></div>
+</section>
+
+<section id="keg" class="hid">
+ <div class="c"><h2>Catat Kegiatan</h2>
+  <div class="g"><select id="kInt"></select><input id="kDate" type="date"></div>
+  <input id="kCat" list="cats" placeholder="Jenis pekerjaan (mis. Instalasi jaringan)">
+  <datalist id="cats"></datalist>
+  <textarea id="kDesc" rows="3" placeholder="Uraian kegiatan"></textarea>
+  <input id="kFoto" type="file" accept="image/*" capture="environment">
+  <button class="p" id="bKeg">Simpan Kegiatan</button></div>
+ <div class="c"><h2>Daftar Kegiatan & Foto</h2><div id="kList" class="ph"></div></div>
+</section>
+
+<section id="mgg" class="hid">
+ <div class="c"><h2>Tambah Anak Magang</h2>
+  <div class="g"><input id="mN" placeholder="Nama lengkap"><input id="mS" placeholder="Sekolah / Kampus"><input id="mJ" placeholder="Jurusan"><input id="mP" placeholder="Pembimbing lapangan"><input id="mA" type="date"><input id="mB" type="date"></div>
+  <p class="m">Tanggal kiri: mulai PKL, kanan: selesai PKL.</p>
+  <button class="p" id="bMg">Simpan</button></div>
+ <div class="c"><h2>Database Anak Magang</h2><div class="sc" id="mTab"></div></div>
+</section>
+
+<section id="lap" class="hid">
+ <div class="c noprint"><div class="row"><select id="lInt" style="max-width:260px;margin:0"></select><button id="bCsv">Unduh CSV</button><button id="bPr">Cetak</button></div></div>
+ <div id="lOut"></div>
+</section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const KEY="pkl_v1";
+let S={interns:[],place:{name:"",lat:null,lng:null,r:100},att:[],act:[]};
+try{const x=localStorage.getItem(KEY);if(x)S=Object.assign(S,JSON.parse(x))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){alert("Penyimpanan penuh. Hapus beberapa foto kegiatan atau unduh CSV lebih dulu.")}}
+const today=()=>new Date().toISOString().slice(0,10);
+const hm=t=>t?new Date(t).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"}):"-";
+const dt=d=>d?new Date(d+"T00:00").toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"}):"-";
+const name=id=>(S.interns.find(i=>i.id===id)||{nama:"(dihapus)"}).nama;
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+// Tab
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+ ["abs","keg","mgg","lap"].forEach(t=>$(t).classList.toggle("hid",t!==b.dataset.t));
+ refresh();
+});
+
+// Lokasi
+function pos(){return new Promise((ok,er)=>{if(!navigator.geolocation)return er(new Error("GPS tidak tersedia"));
+ navigator.geolocation.getCurrentPosition(p=>ok({lat:p.coords.latitude,lng:p.coords.longitude}),e=>er(new Error("Gagal mengambil lokasi: izinkan akses GPS")),{enableHighAccuracy:true,timeout:15000})})}
+function dist(a,b,c,d){const R=6371000,r=x=>x*Math.PI/180,h=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 2*R*Math.asin(Math.sqrt(h))}
+function judge(p){const q=S.place;if(q.lat==null)return{d:null,ok:null};const d=Math.round(dist(p.lat,p.lng,q.lat,q.lng));return{d,ok:d<=q.r}}
+const lokTxt=l=>!l?"-":l.ok===null?"Titik PKL belum diset":(l.ok?"✔ Di lokasi":"✘ Di luar lokasi")+" ("+l.d+" m)";
+
+$("bLoc").onclick=async()=>{try{const p=await pos();S.place={name:$("pN").value||S.place.name,lat:p.lat,lng:p.lng,r:+$("pR").value||100};save();refresh()}catch(e){alert(e.message)}};
+$("pN").onchange=$("pR").onchange=()=>{S.place.name=$("pN").value;S.place.r=+$("pR").value||100;save();refresh()};
+
+// Absensi
+async function absen(type){
+ const id=$("aInt").value;if(!id)return alert("Tambahkan anak magang dulu di tab Anak Magang.");
+ $("aMsg").textContent="Mengambil lokasi...";
+ try{const p=await pos(),j=judge(p),l={lat:p.lat,lng:p.lng,d:j.d,ok:j.ok},now=Date.now();
+  let r=S.att.find(a=>a.i===id&&a.date===today());
+  if(type==="in"){if(r)return $("aMsg").textContent="Sudah absen masuk hari ini.";S.att.push({id:uid(),i:id,date:today(),in:now,inL:l});}
+  else{if(!r)return $("aMsg").textContent="Belum absen masuk hari ini.";r.out=now;r.outL=l}
+  save();$("aMsg").textContent="Berhasil "+(type==="in"?"masuk":"pulang")+" – "+lokTxt(l);refresh()
+ }catch(e){$("aMsg").textContent=e.message}}
+$("bIn").onclick=()=>absen("in");$("bOut").onclick=()=>absen("out");
+
+// Kegiatan
+function shrink(f){return new Promise(ok=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,520/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);ok(c.toDataURL("image/jpeg",.6))};im.src=r.result};r.readAsDataURL(f)})}
+$("bKeg").onclick=async()=>{
+ const i=$("kInt").value,cat=$("kCat").value.trim(),desc=$("kDesc").value.trim();
+ if(!i||!cat)return alert("Pilih anak magang dan isi jenis pekerjaan.");
+ const f=$("kFoto").files[0],foto=f?await shrink(f):null;
+ S.act.push({id:uid(),i,date:$("kDate").value||today(),cat,desc,foto});save();
+ $("kCat").value=$("kDesc").value=$("kFoto").value="";refresh()};
+function delAct(id){if(confirm("Hapus kegiatan ini?")){S.act=S.act.filter(a=>a.id!==id);save();refresh()}}
+
+// Anak magang
+$("bMg").onclick=()=>{const n=$("mN").value.trim();if(!n)return alert("Nama wajib diisi.");
+ S.interns.push({id:uid(),nama:n,sekolah:$("mS").value,jurusan:$("mJ").value,pembimbing:$("mP").value,mulai:$("mA").value,selesai:$("mB").value});
+ save();["mN","mS","mJ","mP","mA","mB"].forEach(x=>$(x).value="");refresh()};
+function delInt(id){if(confirm("Hapus anak magang beserta absensi dan kegiatannya?")){S.interns=S.interns.filter(x=>x.id!==id);S.att=S.att.filter(x=>x.i!==id);S.act=S.act.filter(x=>x.i!==id);save();refresh()}}
+
+// Grafik
+function hbars(d){if(!d.length)return'<p class="m">Belum ada data.</p>';const m=Math.max(...d.map(x=>x[1])),h=d.length*28+6;
+ return`<svg viewBox="0 0 600 ${h}" width="100%">`+d.map((x,k)=>`<text x="0" y="${k*28+18}">${esc(x[0].slice(0,22))}</text><rect class="bar" x="170" y="${k*28+4}" width="${Math.max(3,x[1]/m*380)}" height="18" rx="4"/><text x="${176+x[1]/m*380}" y="${k*28+18}">${x[1]}x</text>`).join("")+"</svg>"}
+function vbars(d){const m=Math.max(1,...d.map(x=>x[1])),w=600/d.length;
+ return`<svg viewBox="0 0 600 170" width="100%">`+d.map((x,k)=>{const h=x[1]/m*110;return`<rect class="bar" x="${k*w+4}" y="${130-h}" width="${w-8}" height="${h}" rx="3"/><text x="${k*w+w/2}" y="${125-h}" text-anchor="middle">${x[1]||""}</text><text x="${k*w+w/2}" y="148" text-anchor="middle" style="font-size:10px">${x[0]}</text>`}).join("")+"</svg>"}
+
+// Laporan
+function lapData(){const f=$("lInt").value,A=S.att.filter(a=>!f||a.i===f),K=S.act.filter(a=>!f||a.i===f);return{A,K}}
+function lap(){
+ const {A,K}=lapData(),hrs=A.reduce((s,a)=>s+(a.out?(a.out-a.in)/36e5:0),0),inLoc=A.filter(a=>a.inL&&a.inL.ok).length;
+ const cnt={};K.forEach(k=>cnt[k.cat]=(cnt[k.cat]||0)+1);
+ const cats=Object.entries(cnt).sort((a,b)=>b[1]-a[1]);
+ const days=[];for(let n=13;n>=0;n--){const d=new Date(Date.now()-n*864e5).toISOString().slice(0,10);days.push([d.slice(8),K.filter(k=>k.date===d).length])}
+ $("lOut").innerHTML=`<div class="k"><div><b>${A.length}</b><span>Hari hadir</span></div><div><b>${hrs.toFixed(1)}</b><span>Total jam kerja</span></div><div><b>${K.length}</b><span>Kegiatan tercatat</span></div><div><b>${A.length?Math.round(inLoc/A.length*100):0}%</b><span>Absen di lokasi</span></div></div>
+ <div class="c"><h2>Frekuensi Jenis Pekerjaan</h2>${hbars(cats)}</div>
+ <div class="c"><h2>Kegiatan per Hari (14 hari terakhir)</h2>${vbars(days)}</div>
+ <div class="c"><h2>Rekap Absensi</h2><div class="sc">${absTable(A)}</div></div>
+ <div class="c"><h2>Rekap Kegiatan</h2><div class="sc"><table><tr><th>Tanggal</th><th>Nama</th><th>Pekerjaan</th><th>Uraian</th></tr>${K.sort((a,b)=>a.date<b.date?1:-1).map(k=>`<tr><td>${dt(k.date)}</td><td>${esc(name(k.i))}</td><td>${esc(k.cat)}</td><td style="white-space:normal">${esc(k.desc)}</td></tr>`).join("")}</table></div></div>`}
+function absTable(A){return`<table><tr><th>Tanggal</th><th>Nama</th><th>Masuk</th><th>Pulang</th><th>Lokasi masuk</th></tr>${[...A].sort((a,b)=>a.date<b.date?1:-1).map(a=>`<tr><td>${dt(a.date)}</td><td>${esc(name(a.i))}</td><td>${hm(a.in)}</td><td>${hm(a.out)}</td><td class="${a.inL&&a.inL.ok?"ok":"no"}">${lokTxt(a.inL)}</td></tr>`).join("")}</table>`}
+$("lInt").onchange=lap;$("bPr").onclick=()=>print();
+$("bCsv").onclick=()=>{const {A,K}=lapData(),q=v=>'"'+String(v??"").replace(/"/g,'""')+'"';
+ let c="ABSENSI\nTanggal,Nama,Masuk,Pulang,Lokasi masuk\n"+A.map(a=>[a.date,name(a.i),hm(a.in),hm(a.out),lokTxt(a.inL)].map(q).join(",")).join("\n")+"\n\nKEGIATAN\nTanggal,Nama,Pekerjaan,Uraian\n"+K.map(k=>[k.date,name(k.i),k.cat,k.desc].map(q).join(",")).join("\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+c],{type:"text/csv"}));a.download="laporan-pkl.csv";a.click()};
+
+// Render
+function refresh(){
+ const opt=S.interns.map(i=>`<option value="${i.id}">${esc(i.nama)}</option>`).join("");
+ ["aInt","kInt"].forEach(x=>{const v=$(x).value;$(x).innerHTML=opt||'<option value="">(belum ada anak magang)</option>';$(x).value=v||$(x).value});
+ const lv=$("lInt").value;$("lInt").innerHTML='<option value="">Semua anak magang</option>'+opt;$("lInt").value=lv;
+ $("pN").value=S.place.name||"";$("pR").value=S.place.r;
+ $("pInfo").textContent=S.place.lat==null?"Titik lokasi belum diset.":`Titik: ${S.place.lat.toFixed(5)}, ${S.place.lng.toFixed(5)} · radius ${S.place.r} m`;
+ if(!$("kDate").value)$("kDate").value=today();
+ $("aTab").innerHTML=absTable(S.att.slice(-30));
+ $("cats").innerHTML=[...new Set(S.act.map(a=>a.cat))].map(c=>`<option value="${esc(c)}">`).join("");
+ $("kList").innerHTML=[...S.act].reverse().map(k=>`<figure>${k.foto?`<img src="${k.foto}" alt="">`:""}<figcaption><b>${esc(k.cat)}</b><br>${esc(name(k.i))} · ${dt(k.date)}<br>${esc(k.desc)}<br><button class="d" onclick="delAct('${k.id}')">Hapus</button></figcaption></figure>`).join("")||'<p class="m">Belum ada kegiatan.</p>';
+ $("mTab").innerHTML=`<table><tr><th>Nama</th><th>Sekolah</th><th>Jurusan</th><th>Pembimbing</th><th>Periode</th><th></th></tr>${S.interns.map(i=>`<tr><td>${esc(i.nama)}</td><td>${esc(i.sekolah)}</td><td>${esc(i.jurusan)}</td><td>${esc(i.pembimbing)}</td><td>${dt(i.mulai)} – ${dt(i.selesai)}</td><td><button class="d" onclick="delInt('${i.id}')">Hapus</button></td></tr>`).join("")}</table>`;
+ lap();
+}
+refresh();
+</script>
+</body>
+</html>
